@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Two of Us</title>
+<meta name="description" content="Pass-and-play games for two. Made for couples.">
+<meta name="theme-color" content="#2b1a2e">
+<meta name="color-scheme" content="dark">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Two of Us">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+:root{--bg:#2b1a2e;--pan:#3b2641;--edge:#54385c;--ink:#f6ece4;--mut:#bba3b8;--a:#f2b84b;--b:#62d2c3;--ai:#2b1a00;
+--serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;--sans:ui-rounded,"SF Pro Rounded",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);color-scheme:dark;overscroll-behavior:none}
+body{padding:env(safe-area-inset-top,0) env(safe-area-inset-right,0) env(safe-area-inset-bottom,0) env(safe-area-inset-left,0)}
+#app{max-width:460px;height:100%;margin:0 auto;display:flex;flex-direction:column;padding:8px 18px 14px}
+header{display:flex;justify-content:space-between;align-items:center;min-height:48px}
+header button{background:none;border:0;color:var(--mut);font:inherit;font-size:16px;min-height:44px;padding:0;cursor:pointer}
+#tally{display:flex;gap:14px;font-weight:700;font-size:16px}
+#stage{flex:1;min-height:0;display:flex;flex-direction:column;gap:14px;overflow:auto}
+button{touch-action:manipulation;cursor:pointer;font:inherit;color:inherit}
+button:focus-visible,input:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.p0{color:var(--a)}.p1{color:var(--b)}
+.bg0{background:var(--a)!important;color:var(--ai)!important}.bg1{background:var(--b)!important;color:var(--ai)!important}
+h2{font-family:var(--serif);font-weight:600;margin:0;font-size:26px;line-height:1.15}
+.big{font-size:44px}
+.sub{margin:0;color:var(--mut);font-size:17px;line-height:1.4}
+.mid{flex:1;display:flex;flex-direction:column;justify-content:center;gap:14px;text-align:center}
+.go{width:100%;min-height:54px;border:0;border-radius:16px;background:var(--ink);color:var(--bg);font-weight:700;font-size:18px}
+.go:disabled{opacity:.3}
+.go.alt{background:var(--pan);color:var(--ink);border:1px solid var(--edge)}
+.two{display:grid;gap:10px}
+.names{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+input{font:inherit;font-size:18px;background:none;border:0;border-bottom:2px solid;color:var(--ink);padding:8px 0;width:100%;border-radius:0}
+input.p0{border-color:var(--a)}input.p1{border-color:var(--b)}input::placeholder{color:var(--mut)}
+.rows{display:grid;gap:10px}
+.row{display:block;width:100%;text-align:left;background:var(--pan);border:0;border-left:5px solid var(--a);border-radius:6px 16px 16px 6px;padding:14px 16px}
+.row:nth-child(even){border-color:var(--b)}
+.row b{display:block;font-family:var(--serif);font-size:21px;font-weight:600;margin-bottom:3px}
+.row span{color:var(--mut);font-size:15px;line-height:1.35}
+.opts{display:grid;gap:10px}
+.opts button{background:var(--pan);border:1px solid var(--edge);border-radius:16px;padding:16px;font-size:18px;text-align:left;min-height:58px}
+.opts button:active,.row:active{background:var(--edge)}
+.q{font-size:30px;margin:6px 0}
+.qcard{flex:1;display:grid;place-items:center;text-align:center;background:var(--pan);border-radius:24px;padding:28px;font-family:var(--serif);font-size:29px;line-height:1.25}
+.read{font-family:var(--mono);font-weight:700;font-size:42px;letter-spacing:.18em;text-align:center;background:var(--pan);border-radius:16px;padding:12px;margin-bottom:10px;min-height:72px}
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pad button{height:54px;border-radius:14px;background:var(--pan);border:1px solid var(--edge);font-family:var(--mono);font-size:24px;font-weight:600}
+.pad button:active{background:var(--edge)}
+.pad .fn{color:var(--mut);font-family:var(--sans)}
+.pad .go{background:var(--ink);color:var(--bg);font-family:var(--sans);font-size:18px;width:auto}
+.tumb{display:flex;gap:10px}
+.cell{flex:1;height:84px;display:grid;place-items:center;font-family:var(--mono);font-weight:700;font-size:44px;border-radius:14px;background:var(--pan);border:2px solid var(--edge);color:var(--mut)}
+.log{flex:1;min-height:60px;overflow:auto;font-family:var(--mono);font-size:22px;letter-spacing:.2em;text-align:center;color:var(--ink)}
+.log div{padding:6px 0;border-bottom:1px solid var(--edge)}
+.board{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;padding:10px;background:var(--pan);border-radius:20px;margin:auto 0}
+.disc{aspect-ratio:1;border-radius:50%;border:0;background:var(--bg);padding:0}
+.toast{position:fixed;left:50%;bottom:calc(100px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:600;z-index:9}
+.hidden{display:none!important}
+@media (max-height:640px){.cell{height:64px;font-size:34px}.pad button{height:46px}.read{font-size:34px;min-height:56px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app">
+  <header><button id="back">‹ All games</button><div id="tally"></div></header>
+  <main id="stage"></main>
+</div>
+<script>
+(()=>{
+const $=s=>document.querySelector(s),st=$('#stage');
+let cur=null,last=null,P=[{n:'',s:0},{n:'',s:0}];
+try{const s=JSON.parse(localStorage.getItem('names'));if(s){P[0].n=s[0]||'';P[1].n=s[1]||''}}catch(e){}
+const N=i=>P[i].n.trim()||'Player '+(i+1);
+const shuffle=a=>a.map(x=>[Math.random(),x]).sort((x,y)=>x[0]-y[0]).map(x=>x[1]);
+const tally=()=>{$('#tally').innerHTML=`<span class=p0>${N(0)} ${P[0].s}</span><span class=p1>${P[1].s} ${N(1)}</span>`};
+const page=h=>{st.innerHTML=h;cur=null;tally();st.scrollTop=0};
+const mount=n=>{$('#kp').replaceWith(n);n.id='kp';cur=n.press?n:null};
+const btn=(t,f,c)=>{const b=document.createElement('button');b.className='go '+(c||'');b.textContent=t;b.onclick=f;return b};
+const flash=m=>{const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.append(t);setTimeout(()=>t.remove(),1600)};
+const pass=(i,t,f)=>{page(`<div class=mid><p class=sub>Pass the phone to</p><h2 class="big p${i}">${N(i)}</h2><p class=sub>${t}</p><div id=kp></div></div>`);mount(btn('I’m ready',f))};
+const card=(t,s,bt,f)=>{page(`<div class=mid><h2 class=big>${t}</h2><p class=sub>${s}</p><div id=kp></div></div>`);mount(btn(bt,f))};
+const end=(w,t,m)=>{if(w>=0)P[w].s++;page(`<div class=mid><h2 class="big ${w>=0?'p'+w:''}">${t}</h2><p class=sub>${m}</p><div class=two id=bx></div></div>`);$('#bx').append(btn('Play again',last),btn('All games',hub,'alt'))};
+
+function keypad(o){
+  let b=[];const box=document.createElement('div');
+  box.innerHTML=`<div class=read></div><div class=pad>${[1,2,3,4,5,6,7,8,9,'⌫',0,'go'].map(k=>`<button data-k="${k}" class="${k=='go'?'go':k=='⌫'?'fn':''}" ${k=='⌫'?'aria-label=Delete':''}>${k=='go'?o.go:k}</button>`).join('')}</div>`;
+  const rd=box.firstChild,go=box.querySelector('.go');
+  const draw=()=>{rd.textContent=o.exact?Array.from({length:o.len},(_,i)=>b[i]===undefined?'_':o.mask?'●':b[i]).join(' '):(b.length?(o.mask?'●'.repeat(b.length):b.join('')):'–');go.disabled=o.exact?b.length<o.len:!b.length};
+  const press=k=>{if(k=='⌫')b.pop();else if(k=='go'){if(!go.disabled)o.onGo(b.slice());return}else if(b.length<o.len)b.push(+k);draw()};
+  box.onclick=e=>{const k=e.target.dataset.k;if(k!=null)press(k)};
+  box.press=press;draw();return box;
+}
+addEventListener('keydown',e=>{if(!cur)return;if(/^\d$/.test(e.key))cur.press(e.key);else if(e.key=='Backspace')cur.press('⌫');else if(e.key=='Enter')cur.press('go')});
+
+/* 1. Crack the Code */
+function code(){
+  last=code;const g={sec:[],known:[[],[]],hist:[[],[]]};
+  const setup=i=>pass(i,'Choose a secret 4-digit code. Digits can repeat, like 7777. Your partner must not look.',()=>{
+    page(`<h2 class=p${i}>${N(i)}, set your code</h2><div id=kp></div>`);
+    mount(keypad({len:4,exact:1,mask:1,go:'Lock it in',onGo:b=>{g.sec[i]=b;i?turn(0):setup(1)}}));
+  });
+  const turn=(t,done)=>{
+    const k=g.known[t];
+    page(`<p class="sub p${t}">${N(t)}, crack ${N(1-t)}’s code</p><div class=tumb>${[0,1,2,3].map(i=>`<div class="cell ${k[i]!=null?'bg'+t:''}">${k[i]!=null?k[i]:'_'}</div>`).join('')}</div><div class=log>${g.hist[t].map(h=>`<div>${h}</div>`).join('')}</div><div id=kp></div>`);
+    mount(done?btn(`Pass to ${N(1-t)}`,()=>turn(1-t)):keypad({len:4,exact:1,go:'Guess',onGo:b=>{
+      const s=g.sec[1-t],m=b.map((d,i)=>d===s[i]);
+      m.forEach((x,i)=>{if(x)g.known[t][i]=b[i]});
+      g.hist[t].unshift(b.map((d,i)=>m[i]?d:'_').join(' '));
+      m.every(x=>x)?end(t,'Unlocked',`${N(t)} cracked ${N(1-t)}’s code, ${s.join('')}, in ${g.hist[t].length} ${g.hist[t].length>1?'guesses':'guess'}.`):turn(t,1);
+    }}));
+  };
+  setup(0);
+}
+
+/* 2. Guess My Number */
+function num(){
+  last=num;const res=[];
+  const round=s=>pass(s,'Pick a secret number from 1 to 100.',()=>{
+    page(`<h2 class=p${s}>${N(s)}, pick 1 to 100</h2><div id=kp></div>`);
+    mount(keypad({len:3,mask:1,go:'Lock it in',onGo:b=>{const n=+b.join('');n<1||n>100?flash('Choose between 1 and 100'):guess(1-s,n,[],s)}}));
+  });
+  const guess=(p,n,hist,s)=>{
+    page(`<p class="sub p${p}">${N(p)}, find ${N(s)}’s number</p><div class=log>${hist.map(x=>`<div>${x}</div>`).join('')}</div><div id=kp></div>`);
+    mount(keypad({len:3,go:'Guess',onGo:b=>{
+      const v=+b.join('');
+      if(v==n){res.push(hist.length+1);
+        if(res.length==1)card('Found it',`${N(p)} needed ${res[0]} ${res[0]>1?'guesses':'guess'}. Now swap.`,'Next round',()=>round(1));
+        else{const [x,y]=res;const w=y<x?0:x<y?1:-1;end(w,w<0?'Dead heat':`${N(w)} wins`,`${N(1)} needed ${x}, ${N(0)} needed ${y}.`)}
+      }else{hist.unshift(`${v}: go ${v<n?'higher':'lower'}`);guess(p,n,hist,s)}
+    }}));
+  };
+  round(0);
+}
+
+/* 3. Connect Four */
+function c4(){
+  last=c4;let bd=Array.from({length:7},()=>[]),t=0;
+  const get=(c,r)=>bd[c]&&bd[c][r];
+  const won=(c,r)=>[[1,0],[0,1],[1,1],[1,-1]].some(([dx,dy])=>{let n=1;for(const s of[1,-1])for(let k=1;k<4&&get(c+dx*k*s,r+dy*k*s)===t;k++)n++;return n>=4});
+  const draw=lock=>{
+    page(`<p class="sub p${t}">${N(t)}, drop a disc</p><div class=board>${[5,4,3,2,1,0].map(r=>[0,1,2,3,4,5,6].map(c=>`<button data-c=${c} class="disc ${bd[c][r]!==undefined?'bg'+bd[c][r]:''}" aria-label="Column ${c+1}"></button>`).join('')).join('')}</div>`);
+    $('.board').onclick=e=>{
+      const c=e.target.dataset.c;if(c==null||lock||bd[c].length>=6)return;
+      bd[c].push(t);const r=bd[c].length-1;
+      if(won(+c,r)){draw(1);setTimeout(()=>end(t,`${N(t)} connects four`,'Nicely stacked.'),700)}
+      else if(bd.every(x=>x.length>=6)){draw(1);setTimeout(()=>end(-1,'Board full','Nobody wins this one.'),700)}
+      else{t=1-t;draw()}
+    };
+  };
+  draw();
+}
+
+/* 4 + 5. Would You Rather / How Well Do You Know Me */
+const WYR=[["Beach week or mountain cabin?",["Beach week","Mountain cabin"]],["Cook together or order in?",["Cook together","Order in"]],["Surprise party or quiet night?",["Surprise party","Quiet night"]],["Early bird for life or night owl for life?",["Early bird","Night owl"]],["Road trip or red-eye flight?",["Road trip","Red-eye flight"]],["Know the future or fix the past?",["Know the future","Fix the past"]],["City apartment or house far out?",["City apartment","House far out"]],["Movie night or dance floor?",["Movie night","Dance floor"]],["Never eat out again or never travel again?",["Never eat out","Never travel"]],["One big trip a year or small trips each month?",["One big trip","Monthly trips"]]];
+const KNOW=[["Ideal Sunday?",["Slow morning in bed","Outdoor adventure","Brunch out","Games and snacks"]],["Comfort food?",["Pasta","Soup","Pizza","Something sweet"]],["Best way to unwind?",["Music","A show","A walk","A nap"]],["Dream trip?",["Tropical island","Big city","Mountains","Road trip"]],["Feels most loved through?",["Kind words","Quality time","Touch","Gifts"]],["Superpower?",["Fly","Invisible","Read minds","Teleport"]],["Karaoke style?",["Power ballad","90s pop","Rap","I’d never sing"]],["Biggest pet peeve?",["Loud chewing","Being late","Mess","Phone at dinner"]]];
+function choice(deck,mode){
+  last=()=>choice(deck,mode);
+  const Q=shuffle(deck).slice(0,6),know=mode=='know';let i=0,hit=0,pts=[0,0];
+  const pick=(p,q,sub,f)=>{page(`<p class="sub p${p}">${sub}</p><h2 class=q>${q[0]}</h2><div class=opts>${q[1].map((o,k)=>`<button data-k=${k}>${o}</button>`).join('')}</div>`);$('.opts').onclick=e=>{const k=e.target.dataset.k;if(k!=null)f(+k)}};
+  const next=()=>{
+    if(i>=Q.length)return know?end(pts[0]==pts[1]?-1:pts[0]>pts[1]?0:1,pts[0]==pts[1]?'A tie':'Knows you best',`${N(0)} ${pts[0]}, ${N(1)} ${pts[1]}.`):end(-1,`In sync on ${hit} of ${Q.length}`,hit>=4?'You two think alike.':'Opposites attract. Ask why on the ones you split.');
+    const q=Q[i],a=know?i%2:0,b=1-a;
+    pass(a,know?'Answer honestly. Your partner will guess.':'Pick your side and keep it hidden.',()=>pick(a,q,`Question ${i+1} of ${Q.length}`,x=>pass(b,know?`Guess what ${N(a)} picked.`:'Pick your side.',()=>pick(b,q,know?`Guess for ${N(a)}`:`Question ${i+1} of ${Q.length}`,y=>{
+      const ok=x==y;if(ok)know?pts[b]++:hit++;
+      card(ok?(know?'Spot on':'Same pick'):(know?'Not quite':'Different picks'),`<span class=p${a}>${N(a)}: ${q[1][x]}</span><br><span class=p${b}>${N(b)}: ${q[1][y]}</span>`,i<Q.length-1?'Next question':'See result',()=>{i++;next()});
+    }))));
+  };
+  next();
+}
+
+/* 6. Conversation Cards */
+const DECK={Light:["What small thing made you smile this week?","Which meal would you happily eat again tomorrow?","Which of our dates would you replay?","What song takes you somewhere instantly?","What are you looking forward to?"],Deeper:["When did you last feel really understood by me?","What is something you’re afraid to want?","What do you hope we never stop doing?","What did you need to hear this year that nobody said?","What does a perfect ordinary day with me look like?"],Playful:["Describe me in three words, no thinking.","Pick my karaoke song.","What would our reality show be called?","Give three ideas for our next date.","Invent a secret handshake. Right now."]};
+function talk(){
+  last=talk;
+  page(`<h2 class=big>Pick a deck</h2><p class=sub>Both answer every card. The first voice alternates.</p><div class=opts>${Object.keys(DECK).map(k=>`<button data-k=${k}>${k}</button>`).join('')}</div>`);
+  $('.opts').onclick=e=>{const k=e.target.dataset.k;if(!k)return;const d=shuffle(DECK[k]);let i=0;
+    const show=()=>{page(`<p class=sub>Card ${i+1} of ${d.length}, ${k}</p><div class=qcard>${d[i]}</div><p class="sub p${i%2}">${N(i%2)} answers first</p><div id=kp></div>`);mount(btn(i<d.length-1?'Next card':'Finish',()=>{++i<d.length?show():hub()}))};show()};
+}
+
+/* Home */
+const GAMES=[["Crack the Code","Hide a 4-digit code. Guess each other’s and see which digits are in the right place.",code],["Guess My Number","Pick a secret from 1 to 100. Fewest guesses wins.",num],["Connect Four","Drop discs. First to four in a row.",c4],["Would You Rather","Six dilemmas. See how often you land together.",()=>choice(WYR,'wyr')],["How Well Do You Know Me","Answer for yourself, then guess your partner’s answer.",()=>choice(KNOW,'know')],["Conversation Cards","Questions from light to deep, taken in turns.",talk]];
+function hub(){
+  $('#back').classList.add('hidden');
+  page(`<div><h2 class=big>Two of Us</h2><p class=sub>Pass-and-play games for two.</p></div><div class=names><input class=p0 id=n0 placeholder="Your name" maxlength=14 value="${P[0].n.replace(/"/g,'')}" autocomplete=off><input class=p1 id=n1 placeholder="Partner’s name" maxlength=14 value="${P[1].n.replace(/"/g,'')}" autocomplete=off></div><div class=rows>${GAMES.map((g,i)=>`<button class=row data-i=${i}><b>${g[0]}</b><span>${g[1]}</span></button>`).join('')}</div><button class="go alt" id=rs>Reset tally</button>`);
+  ['n0','n1'].forEach((id,i)=>$('#'+id).oninput=e=>{P[i].n=e.target.value;tally();try{localStorage.setItem('names',JSON.stringify([P[0].n,P[1].n]))}catch(x){}});
+  $('.rows').onclick=e=>{const r=e.target.closest('.row');if(!r)return;$('#back').classList.remove('hidden');GAMES[r.dataset.i][2]()};
+  $('#rs').onclick=()=>{P[0].s=P[1].s=0;tally()};
+}
+$('#back').onclick=hub;hub();
+})();
+</script>
+</body>
+</html>
